@@ -1,0 +1,3 @@
+description: Install CoffeeLint
+steps:
+  - run: sudo npm install --global coffeelint
