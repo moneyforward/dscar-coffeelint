@@ -54,12 +54,15 @@ steps:
             name: export TRANSFORMATION_ARGUMENTS
             command: |
               set -x
-              cat \<<-EOT >> $BASH_ENV
-              export TRANSFORMATION_ARGUMENTS=(
-                -srM
-                'map(to_entries) | flatten | map((@html "<file name=\"\(.key)\">") + "\(.value | map(@html "<error source=\"\(.name)\" message=\"\(.message)\" severity=\"\(.level)\" line=\"\(.lineNumber)\" column=\"0\" />") | join(""))</file>") | "<checkstyle>\(join(""))</checkstyle>"'
-              )
+              FILTER="$(
+              cat \<<-"EOT" | tr -s ' \n' ' '
+              map(to_entries) | flatten | map((@html "<file name=\"\(.key)\">") + "\(.value | map(
+                @html "<error source=\"\(.name)\" message=\"\(.message)\" severity=\"\(.level)\" line=\"\(.lineNumber)\" column=\"0\" />"
+              ) | join(""))</file>") | "<checkstyle>\(join(""))</checkstyle>"
               EOT
+              )"
+              declare -ax TRANSFORMATION_ARGUMENTS=( -srM "$FILTER" )
+              echo "$(declare -p TRANSFORMATION_ARGUMENTS)" >> $BASH_ENV
         - steps: << parameters.prepare >>
       analysis-command: npx
       analysis-arguments: coffeelint << parameters.analysis-arguments >> -q --reporter=raw
