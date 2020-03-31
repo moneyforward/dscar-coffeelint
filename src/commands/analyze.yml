@@ -54,6 +54,11 @@ steps:
             name: export TRANSFORMATION_ARGUMENTS
             command: |
               set -x
+
+              ANALYSIS_COMMAND=coffeelint
+              declare -ax ANALYSIS_ARGUMENTS=("${ANALYSIS_COMMAND}" "${ANALYSIS_ARGUMENTS[@]}")
+              echo "$(declare -p ANALYSIS_ARGUMENTS)" >> $BASH_ENV
+
               FILTER="$(
               cat \<<-"EOT" | tr -s ' \n' ' '
               map(to_entries) | flatten | map((@html "<file name=\"\(.key)\">") + "\(.value | map(
@@ -65,7 +70,7 @@ steps:
               echo "$(declare -p TRANSFORMATION_ARGUMENTS)" >> $BASH_ENV
         - steps: << parameters.prepare >>
       analysis-command: npx
-      analysis-arguments: coffeelint << parameters.analysis-arguments >> -q --reporter=raw
+      analysis-arguments: << parameters.analysis-arguments >> -q --reporter=raw
       error-pattern: << parameters.error-pattern >>
       transformation-command: jq
       should-find: "true"
