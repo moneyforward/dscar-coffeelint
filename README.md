@@ -1,5 +1,7 @@
 # dscar-coffeelint
 
+[![CircleCI](https://circleci.com/gh/moneyforward/dscar-coffeelint.svg?style=svg)](https://circleci.com/gh/moneyforward/dscar-coffeelint)
+
 Delta [CoffeeLint](http://www.coffeelint.org) reports running on CircleCI
 
 See https://circleci.com/orbs/registry/orb/moneyforward/dscar-coffeelint for details.
